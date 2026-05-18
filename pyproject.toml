@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "batkit"
+version = "0.1.1"
+
+authors = [
+    { name = "Muthu Vallinayagam", email = "muthu.vallin@gmail.com" }
+]
+
+maintainers = [
+    { name = "Muthu Vallinayagam", email = "muthu.vallin@gmail.com" }
+]
+
+description = "A lightweight Python toolkit for electrochemical and battery-data analysis"
+
+readme = "README.md"
+
+requires-python = ">=3.10"
+
+keywords = [
+    "EC-Lab",
+    "BT-Lab",
+    "battery",
+    "electrochemistry",
+    "mpr",
+    "mpt"
+]
+
+license = { file = "LICENSE" }
+
+dependencies = [
+    "numpy>=1.24.0",
+    "matplotlib>=3.9.0",
+    "pandas>=2.0.0",
+    "yadg>=6.2.3"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0"
+]
+
+[project.urls]
+Documentation = "https://github.com/mvnayagam/batkit"
+Repository = "https://github.com/mvnayagam/batkit"
+Issues = "https://github.com/mvnayagam/batkit/issues"
+
+[tool.setuptools.packages.find]
+include = ["batkit*"]
+
+[tool.pylint.MASTER]
+ignore-paths = ["^docs/.*$", "setup.py"]
+
+[tool.mypy]
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+follow_imports = "silent"
+disable_error_code = ["method-assign"]
+strict = true
