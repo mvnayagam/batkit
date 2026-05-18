@@ -269,7 +269,85 @@ class plotdata(plotstyle):
             plt.show()
         
         return fig, (ax, ax2)
+    
+    # ========================================================
+    # Nyquist impedance
+    # ========================================================
+    
+    @classmethod
+    def plot_nyquist_impedance(cls, df, startcycle=0, endcycle=None, show=True):
+        
+        fig, ax = plt.subplots(figsize=(14, 5))
+        cls.switchonticks(ax)
+        cls.gridstyle(ax)
+        
+        # ----------------------------------------------------
+        # Cycle selection
+        # ----------------------------------------------------
+        tcycle = np.unique(df["cycle number"].values)
+        
+        if endcycle is None:
+            endcycle = len(tcycle)
+        
+        cycles = tcycle[startcycle:endcycle]
+        
+        # ----------------------------------------------------
+        # Plot cycles
+        # ----------------------------------------------------
+        for i, cle in enumerate(cycles):
+            
+            # -------------------------
+            # Charging (Ns = 3)
+            # -------------------------
+            subset = df[(df["cycle number"] == cle) & (df["Ns"] == 3)]
+            
+            if not subset.empty:
+                
+                Zmag = subset["|Z|"].to_numpy()
+                phase = subset["Phase(Z)"].to_numpy()
+                
+                phase_rad = np.deg2rad(phase)
+                
+                Zreal = Zmag * np.cos(phase_rad)
+                Zimag = -Zmag * np.sin(phase_rad)
+                
+                label = "Charge" if i == 0 else None
+                
+                ax.plot( Zreal, Zimag, 'b-', lw=2, label=label )
 
+            # -------------------------
+            # Discharging (Ns = 11)
+            # -------------------------
+            subset = df[(df["cycle number"] == cle) & (df["Ns"] == 11) ]
+
+            if not subset.empty:
+                
+                Zmag = subset["|Z|"].to_numpy()
+                phase = subset["Phase(Z)"].to_numpy()
+                
+                phase_rad = np.deg2rad(phase)
+                Zreal = Zmag * np.cos(phase_rad)
+                Zimag = -Zmag * np.sin(phase_rad)
+                
+                label = "Discharge" if i == 0 else None
+                
+                ax.plot( Zreal, Zimag, 'r-', lw=2, label=label )
+                
+        # ----------------------------------------------------
+        # Labels
+        # ----------------------------------------------------
+        ax.set_xlabel("Z' (Ohm)")
+        ax.set_ylabel("-Z'' (Ohm)")
+        
+        ax.legend()
+        
+        plt.tight_layout()
+        
+        if show:
+            plt.show()
+        
+        return fig, ax
+    
     # ========================================================
     # Time vs E and I
     # ========================================================
